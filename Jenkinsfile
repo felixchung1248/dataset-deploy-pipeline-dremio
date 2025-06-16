@@ -42,9 +42,9 @@ pipeline {
                                      usernameVariable: 'DREMIO_PROD_USR', 
                                      passwordVariable: 'DREMIO_PROD_PW')
                 ]) {
-                    sh '''
+                    sh """
                         python3 ${env.WORKSPACE}/cloner.py schema=${env.SCHEMA_NAME} dataset=${env.DATASET_NAME}
-                    '''
+                    """
                 }
             }
         }
