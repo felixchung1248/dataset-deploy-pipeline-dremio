@@ -57,7 +57,7 @@ pipeline {
                                      passwordVariable: 'ZAMMAD_PW')
                 ]) {					
                     sh """
-                        python3 ${env.WORKSPACE}/data-catalog-deploy.py ticket_id=${env.TICKET_ID} zammad_usr=${env.ZAMMAD_USR} zammad_pw=${env.ZAMMAD_PW} zammad_url=${env.ZAMMAD_URL} dataset=${env.DATASET_NAME} datahub_url=${env.DATAHUB_URL} dataset_owner=${env.DATASET_OWNER} dataset_description="${env.DATASET_DESCRIPTION}"
+                        python3 ${env.WORKSPACE}/data-catalog-deploy.py ticket_id=${env.TICKET_ID} dataset=${env.DATASET_NAME} dataset_owner=${env.DATASET_OWNER} dataset_description="${env.DATASET_DESCRIPTION} schema=${env.SCHEMA_NAME}"
                     """
                 }
              }

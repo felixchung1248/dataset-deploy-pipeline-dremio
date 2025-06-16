@@ -23,6 +23,7 @@ from requests.auth import HTTPBasicAuth
 import csv
 from io import StringIO
 from typing import Optional
+import os
 
 
 # Imports for metadata model classes
@@ -59,13 +60,14 @@ parameters = parse_key_value_pairs(sys.argv)
 # batchKey = parameters['batch_key']
 ticketId = parameters['ticket_id']
 # token = parameters['token']
-zammad_usr = parameters['zammad_usr']
-zammad_pw = parameters['zammad_pw']
-zammad_url = parameters['zammad_url']
+zammad_usr = os.environ.get('ZAMMAD_USR')
+zammad_pw = os.environ.get('ZAMMAD_PW')
+zammad_url = os.environ.get('ZAMMAD_URL')
 dataset = parameters['dataset']
-datahub_url = parameters['datahub_url']
+datahub_url = os.environ.get('DATAHUB_URL')
 dataset_owner = parameters['dataset_owner']
 dataset_description = parameters['dataset_description']
+schema = parameters['schema']
 
 response = requests.get(
             f"{zammad_url}/api/v1/ticket_articles/by_ticket/{ticketId}",
@@ -90,9 +92,10 @@ csv_reader = csv.reader(StringIO(csv_content))
 next(csv_reader, None)
 
 switch_dict = {
-            "string": case1,
+            "CHARACTER VARYING": case1,
             "boolean": case2,
-            "number": case3
+            "INTEGER": case3,
+            "DATE": case4
         }
 
 fields = []
@@ -129,7 +132,7 @@ for row in csv_reader:
 
 owner_to_add = make_user_urn(dataset_owner)
 ownership_type = OwnershipTypeClass.TECHNICAL_OWNER
-dataset_urn=builder.make_dataset_urn(platform="Denodo", name=dataset, env="PROD")
+dataset_urn=builder.make_dataset_urn(platform="dremio", name=schema+"."+dataset, env="PROD")
 
 owner_class_to_add = OwnerClass(owner=owner_to_add, type=ownership_type)
 # owner_class_to_add = OwnerClass(owner=owner_to_add)
